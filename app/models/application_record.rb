@@ -12,18 +12,23 @@ end
 # t.destroy
 
 # t = Table.find 24   # by :id
-# t = Table.findby col: 'A'
+# t = Table.findby col: 'A' # may be .find_by
+# .where is .findby but returns multiple
 # t = Table.all   # or .first .last
 
 # t.col = 'B'
 # t.save to save changes to :col
+
+
+=begin
+# Might need attr_accessible?
 
 class User < ApplicationRecord
   attr_accessible :username, :dislayName
 end
 
 class Authenticate < ApplicationRecord
-  attr_accessible :uid, :password
+  attr_accessible :user_id, :password
 end
 
 class Owes < ApplicationRecord
@@ -35,13 +40,15 @@ class Trip < ApplicationRecord
 end
 
 class OnTrip < ApplicationRecord
-  attr_accessible :uid, :tid, :balance
+  attr_accessible :user_id, :trip_id, :balance
 end
 
 class Expense < ApplicationRecord
-  attr_accessible :amount, :tid, :currency, :category, :date, :desc
+  attr_accessible :amount, :trip_id, :currency, :category, :date, :desc
 end
 
 class Liable < ApplicationRecord
-  attr_accessible :uid, :amountLiable, :eid
+  attr_accessible :user_id, :amountLiable, :expense_id
 end
+
+=end

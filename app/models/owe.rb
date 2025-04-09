@@ -1,0 +1,2 @@
+class Owe < ApplicationRecord
+end

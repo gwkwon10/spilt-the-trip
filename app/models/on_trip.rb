@@ -1,0 +1,2 @@
+class OnTrip < ApplicationRecord
+end
