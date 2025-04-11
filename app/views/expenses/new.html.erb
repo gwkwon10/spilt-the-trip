@@ -1,0 +1,36 @@
+<h1>Add a New Expense</h1>
+
+<%= form_with(model: [@trip, @expense]) do |form| %>
+  
+  <div>
+    <%= form.label :description, "Expense Description" %><br>
+    <%= form.text_field :description %>
+  </div>
+
+  <div>
+    <%= form.label :amount, "Amount" %><br>
+    <%= form.number_field :amount, step: 0.01 %>
+  </div>
+
+  <div>
+    <%= form.label :date, "Date of Expense" %><br>
+    <%= form.date_field :date %>
+  </div>
+
+  <div>
+    <%= form.label :traveler_id, "Who Paid?" %><br>
+    <%= form.collection_select :traveler_id, @trip.travelers, :id, :name, prompt: "Select Payer" %>
+  </div>
+
+  <div>
+    <%= form.label :shared_traveler_ids, "Who is sharing this expense?" %><br>
+    <%= form.collection_check_boxes :shared_traveler_ids, @trip.travelers, :id, :name %>
+  </div>
+
+  <div>
+    <%= form.submit "Add Expense" %>
+  </div>
+
+<% end %>
+
+<%= link_to 'Back to Trip', trip_path(@trip) %>
