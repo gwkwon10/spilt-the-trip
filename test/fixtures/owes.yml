@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  uidOwes: 1
+  uidOwed: 1
+  amountOwed: 1.5
+
+two:
+  uidOwes: 1
+  uidOwed: 1
+  amountOwed: 1.5
