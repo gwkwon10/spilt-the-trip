@@ -10,7 +10,7 @@ class ExpensesController < ApplicationController
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.new(expense_params)
     if @expense.save
-      @trip.recalulate_expenses
+      @trip.recalulate_expenses # need to make method in Model to recalculate
       redirect_to trip_path(@trip), notice: "Expense added successfully!"
     else
       render :new
