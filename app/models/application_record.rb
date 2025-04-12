@@ -9,15 +9,30 @@ end
 # t = Table.[new/create] col: 'A', col2: 24
 # new: t is a Table object
 # create: t is Table obj, t added to db
+# t.errors.full_messages # get format errors in creation
 # t.destroy
 
+# association: myTrip.user = myUser
+# myUser.create_authenticate(password: "wombat12")
+# myUsers = trip.users   # myUsers is an array of users in trip
+
+# rails edgeguide:
+# book = Book.new do |b|
+#   b.title = "Metaprogramming Ruby 2"
+#   b.author = "Paolo Perrotta"
+# end
+# book.save
+
 # t = Table.find 24   # by :id
-# t = Table.findby col: 'A' # may be .find_by
+# t = Table.[findby/where] col: 'A'
 # .where is .findby but returns multiple
-# t = Table.all   # or .first .last
+# t = Table.all   # multiple. Or, .first .last .take gets 1
 
 # t.col = 'B'
 # t.save to save changes to :col
+
+
+
 
 
 =begin
