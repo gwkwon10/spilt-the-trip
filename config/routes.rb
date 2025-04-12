@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   #post "/login", to: "sessions#create"
   #delete "/logout", to: "sessions#destroy"
 
-  resources :trips do
-    resources :expenses
+  resources :trips, only: [:index, :show, :new, :create] do
+    resources :expenses, only: [:new, :create]
   end
 end
