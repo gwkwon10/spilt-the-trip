@@ -23,7 +23,6 @@ end
 # end
 # book.save
 
-
 # t = Table.find 24   # by :id
 # t = Table.[findby/where] col: 'A'
 # .where is .findby but returns multiple
@@ -31,6 +30,9 @@ end
 
 # t.col = 'B'
 # t.save to save changes to :col
+
+
+
 
 
 =begin
