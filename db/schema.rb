@@ -11,14 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_04_09_092545) do
-  create_table "authenticates", force: :cascade do |t|
-    t.string "password"
-    t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_authenticates_on_user_id"
-  end
-
   create_table "expenses", force: :cascade do |t|
     t.float "amount"
     t.string "currency"
@@ -74,6 +66,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_09_092545) do
 
   create_table "users", force: :cascade do |t|
     t.string "username"
+    t.string "password"
     t.string "displayName"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

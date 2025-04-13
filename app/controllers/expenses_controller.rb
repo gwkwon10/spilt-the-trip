@@ -23,4 +23,9 @@ class ExpensesController < ApplicationController
     params.require(:expense).permit(:description, :amount, :date, :traveler_id, traveler_ids: [])
   end
 
+  def calc_owes
+    # go through each expense, find deltas in owes for each liable in the expense
+
+  end
+
 end

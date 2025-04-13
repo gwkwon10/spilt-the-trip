@@ -1,2 +1,0 @@
-class Authenticate < ApplicationRecord
-end
