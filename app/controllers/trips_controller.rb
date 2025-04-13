@@ -19,6 +19,7 @@ class TripsController < ApplicationController
   # add new trip to the database
   def create
     @trip = Trip.new(trip_params)
+    @trip.ownerid = current_user.id
     if @trip.save
       redirect_to @trip, notice: "Trip created sucessfully!"
     else
@@ -28,6 +29,6 @@ class TripsController < ApplicationController
 
   private
   def trip_params
-    params.require(:trip).permit(:startDate, :endDate, :name, :ownerid, :defaultCurrency) #add other parameters
+    params.require(:trip).permit(:startDate, :endDate, :name, :defaultCurrency) #add other parameters
   end
 end
