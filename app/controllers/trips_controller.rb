@@ -8,6 +8,7 @@ class TripsController < ApplicationController
   def show
     @trip = Trip.find(params[:id])
     @expenses = @trip.expenses
+    @travelers = @trip.on_trip
   end
 
   # request for new trip to be added
@@ -27,6 +28,6 @@ class TripsController < ApplicationController
 
   private
   def trip_params
-    params.require(:trip).permit(:title) #add other parameters
+    params.require(:trip).permit(:startDate, :endDate, :name, :ownerid, :defaultCurrency) #add other parameters
   end
 end
