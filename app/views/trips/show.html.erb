@@ -37,8 +37,7 @@
         <h5 class="fw-bold">Participants</h5>
         <div class="d-flex align-items-center gap-2 mb-4">
           <% @trip.users.each do |users| %>
-            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center border border-white"
-              style="width: 40px; height: 40px; font-size: 16px;">
+            <div >
               <%= users.displayName.upcase %>
             </div>
           <% end %>
