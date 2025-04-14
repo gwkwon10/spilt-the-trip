@@ -89,7 +89,7 @@ class TripsController < ApplicationController
             if other_way.amountOwed > amount
               other_way.amountOwed -= amount
               other_way.save!
-            elsif other_way.amountLiable < amount
+            elsif other_way.amountOwed < amount
               amount -= other_way.amountOwed
               other_way.destroy
               create = true
