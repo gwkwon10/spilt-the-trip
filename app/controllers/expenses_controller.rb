@@ -10,10 +10,22 @@ class ExpensesController < ApplicationController
   def create
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.new(expense_params)
+
     if @expense.save
       redirect_to trip_path(@trip), notice: "Expense added successfully!"
     else
       render :new
+    end
+    
+    # need: Array of usernames
+    num_un = params[:users].length
+    # mean liability
+    mliable = @expense.amount / num_un
+
+    un_arr.each do |userStr|
+      # get user id for each username
+      user = User.find(username: userStr)
+      liable = Liable.create(user_id: user.user_id, amountLiable: mliable, expense_id: @expense.expense_id)
     end
   end
 
