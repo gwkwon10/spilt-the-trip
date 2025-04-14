@@ -11,7 +11,6 @@ class ExpensesController < ApplicationController
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.new(expense_params)
     if @expense.save
-      @trip.recalulate_expenses # need to make method in Model to recalculate
       redirect_to trip_path(@trip), notice: "Expense added successfully!"
     else
       render :new
@@ -25,6 +24,13 @@ class ExpensesController < ApplicationController
   end
 
   def calc_owes
+    # reset owe values
+    owe_arr = Owe.all
+    owe_arr.each do |owe|
+      owe.amountOwed = 0
+      owe.save
+    end
+
     # go through each expense, find deltas in owes for each liable in the expense
     ex_arr = Expense.all
     # amount MUST equal sum(amountLiable)
