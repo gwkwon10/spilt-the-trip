@@ -3,6 +3,7 @@ class ExpensesController < ApplicationController
   def new
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.new
+    @trip_users = @trip.users
   end
 
   # Add new expenses
@@ -20,7 +21,7 @@ class ExpensesController < ApplicationController
   private
 
   def expense_params
-    params.require(:expense).permit(:description, :amount, :date, :traveler_id, traveler_ids: [])
+    params.require(:expense).permit(:desc, :amount, :date, :currency, :category )
   end
 
   def calc_owes
