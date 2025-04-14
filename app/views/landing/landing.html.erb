@@ -4,7 +4,7 @@
   <h1 class="display-4 text-primary fw-bold">Welcome to Split the Bill</h1>
   <p class="lead text-muted mb-5">Track shared trip expenses with ease.</p>
 
-<% if session[:user_id] %>
+  <% if user_login? %>
     <div class="d-flex justify-content-center gap-3">
       <%= link_to "Create a Trip", new_trip_path, class: "btn btn-primary btn-lg" %>
       <%= link_to "View Your Trips", trips_path, class: "btn btn-outline-primary btn-lg" %>
