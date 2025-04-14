@@ -19,8 +19,9 @@ class ExpensesController < ApplicationController
       user_ids.each do |user_id|
         next if user_id.blank?
         user = User.find(user_id) # find by ID
-        Liable.create(user_id: user.id, amountLiable: mliable, expense_id: @expense.id)
+        Liable.create(user_id: user.id, amountLiable: -mliable, expense_id: @expense.id)
       end
+      Liable.create(user_id: params[:expense][:traveler_id], amountLiable: mliable, expense_id: @expense.id)
       redirect_to trip_path(@trip), notice: "Expense added successfully!"
     else
       render :new
@@ -33,6 +34,25 @@ class ExpensesController < ApplicationController
     params.require(:expense).permit(:desc, :amount, :date, :currency, :category )
   end
 
+  def calc_ows_in_trip
+    Owe.where(userOwing: trip_user_ids, userOwed: trip_user_ids).delete_all
+    trip = Trip.find(params[:trip_id])
+
+    trip.expenses.each do |expense|
+      paid = expense.liables.select {|user| user.amountLiable > 0}
+      owes = expense.liables.select {|user| user.amountLiable < 0}
+
+      paid.each do |payer|
+        owes.each do |ower|
+          owe = Owe.find_or_initialize_by(userOwing: ower.user_id, userOwed: payer.user_id)
+          owe.amountOwed ||= 0
+          owe.amountOwed += ower.amountLiable.abs
+          owe.save!
+        end
+      end
+    end
+  end
+  
   def calc_owes
     # reset owe values
     owe_arr = Owe.all
