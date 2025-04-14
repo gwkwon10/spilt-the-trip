@@ -57,6 +57,13 @@ class ExpensesController < ApplicationController
         for (int j=0; j<userOwesArr.length; j++) {
           debt_ratio = userOwesArr[j][1]/total_debt #percentage of debt they must pay, which is the percentage per Owed
           for (int k=0; k<userOwedArr.length; k++) {
+            uid1 = lbArr[userOwesArr[j][0]].user_id
+            uid2 = lbArr[userOwedArr[k][1]].user_id
+            if (uid1 > uid2) {
+              temp = uid2
+              uid2 = uid1
+              uid1 = temp
+            }
             amtOwed = debt_ratio*userOwedArr[k][1] # amount that userOwesArr[j] owes userOwedArr[k]
             # if 
             # if lbArr[userOwesArr[j][0]].user_id and lbArr[userOwedArr[k][1]].user_id have an Owe together, O.amountOwed+=amtOwed
