@@ -12,7 +12,7 @@
   <% if user_login? %>
     <hr class="my-5" />
     <p class="text-muted">
-      Not you? <%= link_to "Log out", logout_path, method: :delete %>
+      Not you? <%= button_to "Log out", logout_path, method: :delete %>
     </p>
   <% else %>
     <hr class="my-5" />
