@@ -33,7 +33,7 @@ class TripsController < ApplicationController
       # find the user for each traveler added to the trip
       if params[:traveler_emails].present?
         Rails.logger.debug("Access emails")
-        traveler_emails = params[:traveler_emails].spilt(",").map(&string)
+        traveler_emails = params[:traveler_emails].split(",").map(&string)
         traveler_emails.each do |email|
           user = User.find_by(email: email)
           if user
