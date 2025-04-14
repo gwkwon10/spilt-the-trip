@@ -12,11 +12,12 @@ class ExpensesController < ApplicationController
     @expense = @trip.expenses.new(expense_params)
 
     if @expense.save
-      user_ids = params[:user_ids] # This is an array of user IDs
+      user_ids = params[:expense][:user_ids] # This is an array of user IDs
       num_un = user_ids.length
       mliable = @expense.amount / num_un
 
       user_ids.each do |user_id|
+        next if user_id.blank?
         user = User.find(user_id) # find by ID
         Liable.create(user_id: user.id, amountLiable: mliable, expense_id: @expense.id)
       end
