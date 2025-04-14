@@ -12,7 +12,7 @@ class TripsController < ApplicationController
   def show
     @trip = Trip.find(params[:id])
     @expenses = @trip.expenses
-    @travelers = @trip.travelers
+    @travelers = @trip.users
   end
 
   # request for new trip to be added
@@ -25,12 +25,17 @@ class TripsController < ApplicationController
     @trip = Trip.new(trip_params)
     @trip.ownerid = current_user.id
     if @trip.save
+      # create user trip relation for current user
       OnTrip.create(user_id: current_user.id, trip_id: @trip.id)
+      # find the user for each traveler added to the trip
       if params[:traveler_emails].present?
         traveler_emails = params[:traveler_emails].spilt(",").map(&string)
-        users = User.where(email: traveler_emails)
-        users.each do |user|
-          OnTrip.create(user_id: user.id, trip_id: @trip.id)
+        traveler_emails.each do |email|
+          user = User.find_by(email: email)
+          if user
+            OnTrip.create(user_id: user.id, trip_id: @trip.id, balance: 0)
+          end
+          # potentially figure out how to handle if user is not signed up to the application
         end
       end
       redirect_to @trip, notice: "Trip created sucessfully!"
