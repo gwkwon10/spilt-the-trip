@@ -5,12 +5,13 @@ class SessionController < ApplicationController
   # create new session for user
   def create
     @user = User.find_by(email: params[:email])
-
-    if @user && @user.password == params[:password]
+    Rails.logger.debug "got into create"
+    if @user && @user.authenticate(params[:password])
       session[:user_id] = @user.id
-      redirect_to trips_path, notice: "Logged In!"
+      redirect_to root_path, notice: "Logged In!"
     else
       flash.now[:alert] = "Invalid email or password"
+      Rails.logger.debug "Entered Invalid"
       render :new
     end
   end
