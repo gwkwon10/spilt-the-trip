@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_09_092545) do
 
   create_table "liables", force: :cascade do |t|
     t.float "amountLiable"
+    t.float "paid"
     t.integer "user_id"
     t.integer "expense_id"
     t.datetime "created_at", null: false
@@ -34,7 +35,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_09_092545) do
   end
 
   create_table "on_trips", force: :cascade do |t|
-    t.float "balance"
     t.integer "user_id"
     t.integer "trip_id"
     t.datetime "created_at", null: false
