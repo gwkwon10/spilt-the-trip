@@ -2,6 +2,7 @@ class User < ApplicationRecord
     has_secure_password
     
     has_many :owned_trips, class_name: 'Trip', dependent: :destroy
+    has_many :on_trips
     has_many :trips, through: :on_trips
     has_many :users, through: :owes
     has_many :owes_as_user_owed, class_name: 'Owe', foreign_key: 'userOwed_id'
