@@ -1,14 +1,18 @@
 class TripsController < ApplicationController
   # main index page with all the trips of the user
   def index
-    @trips = Trip.all
+    if session[:user_id]
+      @trips = current_user.trips
+    else
+      redirect_to login_path, alert: "Please log in first"
+    end
   end
 
   # Show specific trip page
   def show
     @trip = Trip.find(params[:id])
     @expenses = @trip.expenses
-    @travelers = @trip.on_trip
+    @travelers = @trip.users
   end
 
   # request for new trip to be added
@@ -19,7 +23,21 @@ class TripsController < ApplicationController
   # add new trip to the database
   def create
     @trip = Trip.new(trip_params)
+    @trip.ownerid = current_user.id
     if @trip.save
+      # create user trip relation for current user
+      OnTrip.create(user_id: current_user.id, trip_id: @trip.id)
+      # find the user for each traveler added to the trip
+      if params[:traveler_emails].present?
+        traveler_emails = params[:traveler_emails].spilt(",").map(&string)
+        traveler_emails.each do |email|
+          user = User.find_by(email: email)
+          if user
+            OnTrip.create(user_id: user.id, trip_id: @trip.id, balance: 0)
+          end
+          # potentially figure out how to handle if user is not signed up to the application
+        end
+      end
       redirect_to @trip, notice: "Trip created sucessfully!"
     else
       render :new
@@ -28,6 +46,6 @@ class TripsController < ApplicationController
 
   private
   def trip_params
-    params.require(:trip).permit(:startDate, :endDate, :name, :ownerid, :defaultCurrency) #add other parameters
+    params.require(:trip).permit(:name, :startDate, :endDate, :defaultCurrency) #add other parameters
   end
 end

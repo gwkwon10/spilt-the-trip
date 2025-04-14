@@ -7,7 +7,7 @@
       <h4>Login to Your Account</h4>
     </div>
     <div class="card-body">
-      <%= form_with url: "#", method: "post", local: true do |form| %>
+      <%= form_with url: "/login", method: "post", local: true do |form| %>
         <div class="mb-3">
           <%= form.label :email, "Email Address", class: "form-label" %>
           <%= form.text_field :email, class: "form-control", placeholder: "Enter your email" %>
@@ -24,7 +24,7 @@
       <% end %>
     </div>
     <div class="card-footer text-center">
-      <%= link_to "Forgot password?", "#", class: "text-muted" %>
+      <%= link_to "Not a User Yet? Sign Up Here!", "/signup", class: "text-muted" %>
     </div>
   </div>
 </div>
