@@ -24,8 +24,11 @@
     </div>
 
     <div class="mb-3">
-      <%= f.label :traveler_emails, "Participants", class: "form-label" %>
-      <%= f.text_field :traveler_emails, class: "form-control", placeholder: "Enter participant emails (comma separated)"%>
+      <label class="form-label">Select Participants</label>
+      <%= select_tag "participant_ids[]",
+          options_from_collection_for_select(@users, "id", "displayName"),
+          multiple: true,
+          class: "form-select" %>
     </div>
 
     <div class="mb-3">
