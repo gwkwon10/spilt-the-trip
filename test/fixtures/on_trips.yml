@@ -3,9 +3,7 @@
 one:
   user_id: 1
   trip_id: 1
-  balance: 1.5
 
 two:
   user_id: 1
   trip_id: 1
-  balance: 1.5
