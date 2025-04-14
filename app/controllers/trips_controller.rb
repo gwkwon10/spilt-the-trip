@@ -1,4 +1,5 @@
 class TripsController < ApplicationController
+  before_action :require_login
   # main index page with all the trips of the user
   def index
     if session[:user_id]
