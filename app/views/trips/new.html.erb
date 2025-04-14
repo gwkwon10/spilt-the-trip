@@ -1,52 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Create a New Trip</title>
-  <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", media: "all", "data-turbo-track": "reload" %>
-</head>
-<body>
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow-sm border-primary">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Create a New Trip</h5>
-          </div>
-          <div class="card-body">
-            <form action="#" method="POST">
-              <div class="mb-3">
-                <label for="trip_name" class="form-label">Trip Name</label>
-                <input type="text" class="form-control" id="trip_name" placeholder="Enter the name of your trip" required>
-              </div>
-              <div class="mb-3">
-                <label for="start_date" class="form-label">Start Date</label>
-                <input type="date" class="form-control" id="start_date" required>
-              </div>
-              <div class="mb-3">
-                <label for="end_date" class="form-label">End Date</label>
-                <input type="date" class="form-control" id="end_date" required>
-              </div>
-              <div class="mb-3">
-                <label for="participants" class="form-label">Participants</label>
-                <input type="text" class="form-control" id="participants" placeholder="Enter participants' names (comma separated)" required>
-              </div>
-              <div class="mb-3">
-                <label for="default_currency" class="form-label">Default Currency</label>
-                <select class="form-select" id="default_currency" required>
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="JPY">JPY</option>
-                </select>
-              </div>
+<%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", media: "all" %>
 
-              <button type="submit" class="btn btn-primary w-100">Create Trip</button>
-            </form>
-          </div>
-        </div>
-      </div>
+<div class="container py-5">
+  <h1 class="text-center text-primary fw-bold mb-4">Create a New Trip</h1>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
+  <% end %>
+
+  <%= form_with model: @trip, url: trips_path, method: :post, local: true, class: "w-75 mx-auto" do |f| %>
+    <div class="mb-3">
+      <%= f.label :name, "Trip Name", class: "form-label" %>
+      <%= f.text_field :name, class: "form-control", placeholder: "Enter the name of your trip", required: true %>
     </div>
-  </div>
-</body>
-</html>
+
+    <div class="mb-3">
+      <%= f.label :start_date, "Start Date", class: "form-label" %>
+      <%= f.date_field :start_date, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :end_date, "End Date", class: "form-label" %>
+      <%= f.date_field :end_date, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :traveler_emails, "Participants", class: "form-label" %>
+      <%= f.text_field :traveler_emails, class: "form-control", placeholder: "Enter participant emails (comma separated)", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :default_currency, "Default Currency", class: "form-label" %>
+      <%= f.select :default_currency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['JPY', 'JPY']]), {}, class: "form-select", required: true %>
+    </div>
+
+    <%= f.submit "Create Trip", class: "btn btn-primary w-100" %>
+  <% end %>
+</div>
