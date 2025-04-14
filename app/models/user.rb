@@ -1,6 +1,6 @@
 class User < ApplicationRecord
     has_secure_password
-
+    
     has_many :owned_trips, class_name: 'Trip', dependent: :destroy
     has_many :trips, through: :on_trips
     has_many :users, through: :owes

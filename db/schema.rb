@@ -10,58 +10,57 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_09_092545) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_14_034534) do
+  create_table "authenticates", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "password"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "expenses", force: :cascade do |t|
     t.float "amount"
+    t.integer "trip_id"
     t.string "currency"
     t.string "category"
     t.date "date"
     t.string "desc"
-    t.integer "trip_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["trip_id"], name: "index_expenses_on_trip_id"
   end
 
   create_table "liables", force: :cascade do |t|
-    t.float "amountLiable"
-    t.float "paid"
     t.integer "user_id"
+    t.float "amountLiable"
     t.integer "expense_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["expense_id"], name: "index_liables_on_expense_id"
-    t.index ["user_id"], name: "index_liables_on_user_id"
   end
 
   create_table "on_trips", force: :cascade do |t|
     t.integer "user_id"
     t.integer "trip_id"
+    t.float "balance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["trip_id"], name: "index_on_trips_on_trip_id"
-    t.index ["user_id"], name: "index_on_trips_on_user_id"
   end
 
   create_table "owes", force: :cascade do |t|
+    t.integer "uidOwes"
+    t.integer "uidOwed"
     t.float "amountOwed"
-    t.integer "userOwed_id"
-    t.integer "userOwing_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["userOwed_id"], name: "index_owes_on_userOwed_id"
-    t.index ["userOwing_id"], name: "index_owes_on_userOwing_id"
   end
 
   create_table "trips", force: :cascade do |t|
     t.date "startDate"
     t.date "endDate"
     t.string "name"
+    t.integer "ownerid"
     t.string "defaultCurrency"
-    t.integer "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["owner_id"], name: "index_trips_on_owner_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -69,12 +68,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_09_092545) do
     t.string "password"
     t.string "email"
     t.string "displayName"
+    t.string "password_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email"
   end
-
-  add_foreign_key "expenses", "trips"
-  add_foreign_key "owes", "users", column: "userOwed_id"
-  add_foreign_key "owes", "users", column: "userOwing_id"
-  add_foreign_key "trips", "users", column: "owner_id"
 end

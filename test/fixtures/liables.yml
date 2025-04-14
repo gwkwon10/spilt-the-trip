@@ -3,9 +3,11 @@
 one:
   user_id: 1
   amountLiable: 1.5
+  paid: 1
   expense_id: 1
 
 two:
   user_id: 1
   amountLiable: 1.5
+  paid: 1
   expense_id: 1
