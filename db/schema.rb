@@ -10,14 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_14_034534) do
-  create_table "authenticates", force: :cascade do |t|
-    t.integer "user_id"
-    t.string "password"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
+ActiveRecord::Schema[8.0].define(version: 2025_04_14_062050) do
   create_table "expenses", force: :cascade do |t|
     t.float "amount"
     t.integer "trip_id"
@@ -46,8 +39,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_14_034534) do
   end
 
   create_table "owes", force: :cascade do |t|
-    t.integer "uidOwes"
-    t.integer "uidOwed"
+    t.integer "userOwing"
+    t.integer "userOwed"
     t.float "amountOwed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -64,11 +57,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_14_034534) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "username"
-    t.string "password"
-    t.string "email"
-    t.string "displayName"
     t.string "password_digest"
+    t.string "displayName"
+    t.string "email"
+    t.string "password"
+    t.string "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
