@@ -38,23 +38,41 @@
         <div class="d-flex align-items-center gap-2 mb-4">
           <% @travelers.each do |users| %>
             <div >
-              <%= users.displayName.upcase %>
+              <%= users.displayName.upcase %> - Balance: 
+              <%= number_to_currency(OnTrip.find_by(user_id: users.id, trip_id: @trip.id)&.balance || 0) %>
             </div>
           <% end %>
         </div>
       <% end %>
-
+      <h5 class="fw-bold">Expenses</h5>
+      <%= link_to "Add Expense", new_trip_expense_path(@trip), class: "btn btn-outline-secondary" %>
       <% if @trip.expenses.any? %>
-        <h5 class="fw-bold">Expenses</h5>
-        <%= link_to "Add Expense", new_trip_expense_path(@trip), class: "btn btn-outline-secondary" %>
         <ul class="list-group mb-4">
           <% @trip.expenses.each do |expense| %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <%= expense.desc %>
+              <div>
+                <%= expense.desc %>:
+                <%= expense.date.strftime("%B %d, %Y") %> <!-- Format date as you want -->
+              </div>
+              <div>
+                People:
+                <%= expense.liables.map { |liable| liable.user.displayName }.join(", ") %>
+              </div>
               <span class="badge bg-primary rounded-pill"><%= number_to_currency(expense.amount) %></span>
             </li>
           <% end %>
         </ul>
+        <br>
+        <h5 class="fw-bold">Who Owes What</h5>
+        <% if @owe.any? %>
+          <ul class="list-group mb-4">
+            <% @owe.each do |expense| %>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                <%= expense.userOwing.displayName %> → <%= expense.userOwed.displayName %>: $<%= '%.2f' % expense.amountOwed %>
+              </li>
+            <% end %>
+          </ul>
+        <% end %>
       <% end %>
     </div>
   </div>

@@ -34,25 +34,6 @@ class ExpensesController < ApplicationController
     params.require(:expense).permit(:desc, :amount, :date, :currency, :category )
   end
 
-  def calc_ows_in_trip
-    Owe.where(userOwing: trip_user_ids, userOwed: trip_user_ids).delete_all
-    trip = Trip.find(params[:trip_id])
-
-    trip.expenses.each do |expense|
-      paid = expense.liables.select {|user| user.amountLiable > 0}
-      owes = expense.liables.select {|user| user.amountLiable < 0}
-
-      paid.each do |payer|
-        owes.each do |ower|
-          owe = Owe.find_or_initialize_by(userOwing: ower.user_id, userOwed: payer.user_id)
-          owe.amountOwed ||= 0
-          owe.amountOwed += ower.amountLiable.abs
-          owe.save!
-        end
-      end
-    end
-  end
-  
   def calc_owes
     # reset owe values
     owe_arr = Owe.all

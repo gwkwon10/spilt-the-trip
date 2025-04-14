@@ -14,6 +14,9 @@ class TripsController < ApplicationController
     @trip = Trip.find(params[:id])
     @expenses = @trip.expenses
     @travelers = @trip.users
+    calc_ows_in_trip
+    calc_total_spent
+    @owe = Owe.all
   end
 
   # request for new trip to be added
@@ -68,5 +71,55 @@ class TripsController < ApplicationController
   private
   def trip_params
     params.require(:trip).permit(:name, :startDate, :endDate, :defaultCurrency) # add other parameters
+  end
+
+  def calc_ows_in_trip
+    Owe.delete_all
+
+    @expenses.each do |expense|
+      paid = expense.liables.select {|user| user.amountLiable > 0}
+      owes = expense.liables.select {|user| user.amountLiable < 0}
+
+      paid.each do |payer|
+        owes.each do |ower|
+          create = false
+          amount = ower.amountLiable.abs
+          other_way = Owe.find_by(userOwing: payer.user, userOwed: ower.user)
+          if other_way
+            if other_way.amountOwed > amount
+              other_way.amountOwed -= amount
+              other_way.save!
+            elsif other_way.amountLiable < amount
+              amount -= other_way.amountOwed
+              other_way.destroy
+              create = true
+            else
+              other.destory
+            end
+          else
+            create = true
+          end
+          if create
+            owe = Owe.new(userOwing: ower.user, userOwed: payer.user, amountOwed: amount)
+            owe.save!
+          end
+        end
+      end
+    end
+  end
+
+  def calc_total_spent
+    @travelers.each do |user|
+      # Find the total amount a user is liable for in a specific trip
+      total = Liable.joins(:expense).where(user_id: user.id).where(expenses: { trip_id: @trip.id }).sum("ABS(amountLiable)")
+
+      on_trip_record = OnTrip.find_by(user_id: user.id, trip_id: @trip.id)
+      if on_trip_record
+        on_trip_record.update(balance: total)  # Update balance for the user
+      else
+        # If the on_trip record doesn't exist, create it with the balance
+        OnTrip.create(user_id: user.id, trip_id: @trip.id, balance: total_spent)
+      end
+    end
   end
 end
