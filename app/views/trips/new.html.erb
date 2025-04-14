@@ -7,30 +7,30 @@
     <div class="alert alert-danger"><%= flash[:alert] %></div>
   <% end %>
 
-  <%= form_with model: @trip, url: trips_path, method: :post, local: true, class: "w-75 mx-auto" do |f| %>
+  <%= form_with model: @trip, url: trips_path, method: :post, data: { turbo: false }, local: true, class: "w-75 mx-auto" do |f| %>
     <div class="mb-3">
       <%= f.label :name, "Trip Name", class: "form-label" %>
       <%= f.text_field :name, class: "form-control", placeholder: "Enter the name of your trip", required: true %>
     </div>
 
     <div class="mb-3">
-      <%= f.label :start_date, "Start Date", class: "form-label" %>
-      <%= f.date_field :start_date, class: "form-control", required: true %>
+      <%= f.label :startDate, "Start Date", class: "form-label" %>
+      <%= f.date_field :startDate, class: "form-control", required: true %>
     </div>
 
     <div class="mb-3">
-      <%= f.label :end_date, "End Date", class: "form-label" %>
-      <%= f.date_field :end_date, class: "form-control", required: true %>
+      <%= f.label :endDate, "End Date", class: "form-label" %>
+      <%= f.date_field :endDate, class: "form-control", required: true %>
     </div>
 
     <div class="mb-3">
       <%= f.label :traveler_emails, "Participants", class: "form-label" %>
-      <%= f.text_field :traveler_emails, class: "form-control", placeholder: "Enter participant emails (comma separated)", required: true %>
+      <%= f.text_field :traveler_emails, class: "form-control", placeholder: "Enter participant emails (comma separated)"%>
     </div>
 
     <div class="mb-3">
-      <%= f.label :default_currency, "Default Currency", class: "form-label" %>
-      <%= f.select :default_currency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['JPY', 'JPY']]), {}, class: "form-select", required: true %>
+      <%= f.label :defaultCurrency, "Default Currency", class: "form-label" %>
+      <%= f.select :defaultCurrency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['JPY', 'JPY']]), {}, class: "form-select", required: true %>
     </div>
 
     <%= f.submit "Create Trip", class: "btn btn-primary w-100" %>
