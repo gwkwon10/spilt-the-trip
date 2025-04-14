@@ -46,6 +46,7 @@
 
       <% if @trip.expenses.any? %>
         <h5 class="fw-bold">Expenses</h5>
+        <%= link_to "Add Expense", new_trip_expense_path(@trip), class: "btn btn-outline-secondary" %>
         <ul class="list-group mb-4">
           <% @trip.expenses.each do |expense| %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
