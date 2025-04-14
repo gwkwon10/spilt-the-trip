@@ -4,11 +4,12 @@
   <h1 class="display-4 text-primary fw-bold">Welcome to Split the Bill</h1>
   <p class="lead text-muted mb-5">Track shared trip expenses with ease.</p>
 
-  <% if user_login? %>
-    <div class="d-flex justify-content-center gap-3">
-      <%= link_to "Create a Trip", new_trip_path, class: "btn btn-primary btn-lg" %>
-      <%= link_to "View Your Trips", trips_path, class: "btn btn-outline-primary btn-lg" %>
-    </div>
+  <div class="d-flex justify-content-center gap-3 mb-4">
+    <%= link_to "Create a Trip", new_trip_path, class: "btn btn-primary btn-lg" %>
+    <%= link_to "View Your Trips", trips_path, class: "btn btn-outline-primary btn-lg" %>
+  </div>
+
+  <% if session[:user_id] %>
     <hr class="my-5" />
     <p class="text-muted">
       Not you? <%= link_to "Log out", logout_path, method: :delete %>
