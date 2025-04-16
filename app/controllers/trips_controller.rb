@@ -74,7 +74,11 @@ class TripsController < ApplicationController
   end
 
   def calc_ows_in_trip
-    Owe.delete_all
+    owe_arr = Owe.where(trip_id_mirror == @trip.id)
+    owe_arr.each do |owe|
+      owe.amountOwed = 0
+      owe.save
+    end
 
     @expenses.each do |expense|
       paid = expense.liables.select {|user| user.amountLiable > 0}
@@ -100,7 +104,7 @@ class TripsController < ApplicationController
             create = true
           end
           if create
-            owe = Owe.new(userOwing: ower.user, userOwed: payer.user, amountOwed: amount)
+            owe = Owe.new(userOwing: ower.user, userOwed: payer.user, amountOwed: amount, trip_id_mirror: @trip.id)
             owe.save!
           end
         end

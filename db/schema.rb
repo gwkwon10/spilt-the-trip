@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_14_070952) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_16_181126) do
   create_table "expenses", force: :cascade do |t|
     t.float "amount"
     t.integer "trip_id"
@@ -44,6 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_14_070952) do
     t.float "amountOwed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "trip_id_mirror"
   end
 
   create_table "trips", force: :cascade do |t|

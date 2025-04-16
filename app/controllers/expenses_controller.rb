@@ -36,7 +36,7 @@ class ExpensesController < ApplicationController
 
   def calc_owes
     # reset owe values
-    owe_arr = Owe.all
+    owe_arr = Owe.where(trip_id_mirror == -1)
     owe_arr.each do |owe|
       owe.amountOwed = 0
       owe.save
