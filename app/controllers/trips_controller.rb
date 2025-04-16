@@ -110,6 +110,7 @@ class TripsController < ApplicationController
         end
       end
     end
+    Owe.delete_all
   end
 
   def calc_total_spent

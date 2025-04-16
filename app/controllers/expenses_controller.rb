@@ -84,14 +84,14 @@ class ExpensesController < ApplicationController
               amtOwed *= -1 # delta for 1 to 2 Owe
             end
             
-            owe = Owe.findby(userOwing: uid1,userOwed: uid2)
+            owe = Owe.findby(userOwing: uid1, userOwed: uid2, trip_id_mirror: -1)
             
             # else, create an Owe between them and set O.amountOwed = amtOwed
             if owe # if uid1 and uid2 have an Owe together, O.amountOwed+=amtOwed
               owe.amountOwed += amtOwed #if amountOwed negative, Owed owes Owing. If aO +, Owing owes Owed
               owe.save
             else
-              Owe.create(userOwing: uid1,userOwed: uid2, amountOwed: amtOwed)
+              Owe.create(userOwing: uid1,userOwed: uid2, amountOwed: amtOwed, trip_id_mirror: -1)
             end
           end
         end
