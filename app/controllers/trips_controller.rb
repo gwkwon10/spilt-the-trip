@@ -74,7 +74,7 @@ class TripsController < ApplicationController
   end
 
   def calc_ows_in_trip
-    owe_arr = Owe.where(trip_id_mirror == @trip.id)
+    owe_arr = Owe.where(trip_id_mirror: @trip.id)
     owe_arr.each do |owe|
       owe.amountOwed = 0
       owe.save
