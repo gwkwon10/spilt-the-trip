@@ -52,7 +52,7 @@
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
                 <%= expense.desc %>:
-                <%= expense.date.strftime("%B %d, %Y") %> <!-- Format date as you want -->
+                <%= expense.date.present? ? expense.date.strftime("%B %d, %Y") : "No date"%>
               </div>
               <div>
                 People:

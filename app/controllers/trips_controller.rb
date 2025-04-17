@@ -98,7 +98,7 @@ class TripsController < ApplicationController
               other_way.destroy
               create = true
             else
-              other.destory
+              other_way.destroy
             end
           else
             create = true
