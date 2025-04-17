@@ -1,0 +1,57 @@
+<%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", media: "all", "data-turbo-track": "reload" %>
+
+
+<div class="container py-5">
+   <h1 class="text-center text-primary fw-bold mb-4">Edit a New Expense</h1>
+
+   <% if flash[:alert] %>
+      <div class="alert alert-danger"><%= flash[:alert] %></div>
+   <% end %>
+  <%= form_with model: [@trip, @expense], url: trip_expenses_path(@trip), method: :post, data: { turbo: false }, local: true, class: "w-50 mx-auto" do |form| %>
+
+    <div  class="mb-3">
+      <%= form.label :desc, "Expense Description", class: "form-label" %><br>
+      <%= form.text_field :desc %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :category, class: "form-label" %>
+      <%= form.select :category, options_for_select(["Food", "Transport", "Lodging", "Entertainment", "Other"]) %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :amount, "Amount", class: "form-label" %><br>
+      <%= form.number_field :amount,  step: 0.01 , class: "form-control"%>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :currency, class: "form-label" %>
+      <%= form.select :currency, options_for_select(["USD", "EUR", "JPY"]), class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :date, "Date of Expense", class: "form-label" %><br>
+      <%= form.date_field :date, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :traveler_id, "Who Paid?", class: "form-label" %><br>
+      <%= form.collection_select :traveler_id, @trip.users, :id, :displayName, prompt: "Select Payer", class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :users, "Select Who Is Involved", class: "form-label" %>
+      <%= form.collection_check_boxes :user_ids, @trip_users, :id, :displayName do |b| %>
+        <div>
+          <%= b.check_box %>
+          <%= b.label%>
+        </div>
+      <% end %>
+    </div>
+    
+    <div class="mb-3">
+      <%= form.submit "Add Expense", class: "btn btn-primary w-100" %>
+    </div>
+
+  <% end %>
+</div>
