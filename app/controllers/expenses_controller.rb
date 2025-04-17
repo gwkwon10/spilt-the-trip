@@ -28,6 +28,31 @@ class ExpensesController < ApplicationController
     end
   end
 
+  def edit
+    @expense = Expense.find(params[:id])
+  end
+
+  def update
+    @expense = Expense.find(params[:id])
+    if @expense.update(expense_params)
+      @expense.liables.destory
+      user_ids = params[:expense][:user_ids] # This is an array of user IDs
+      num_un = user_ids.length
+      mliable = @expense.amount / num_un
+
+      user_ids.each do |user_id|
+        next if user_id.blank?
+        user = User.find(user_id) # find by ID
+        Liable.create(user_id: user.id, amountLiable: -mliable, expense_id: @expense.id)
+      end
+      Liable.create(user_id: params[:expense][:traveler_id], amountLiable: mliable, expense_id: @expense.id)
+      redirect_to trip_path(@trip), notice: "Expense added successfully!"
+    else
+      flash.now[:alert] = @expense.errors.full_messages.to_sentence
+      render :edit
+    end
+  end
+
   private
 
   def expense_params
