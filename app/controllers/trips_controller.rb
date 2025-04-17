@@ -68,6 +68,12 @@ class TripsController < ApplicationController
     end
    end
 
+   def update_default_currency
+    @trip = Trip.find(params[:id])
+    @trip.update(defaultCurrency: params[:trip][:defaultCurrency])
+    redirect_to @trip
+  end
+
   private
   def trip_params
     params.require(:trip).permit(:name, :startDate, :endDate, :defaultCurrency) # add other parameters
@@ -127,3 +133,6 @@ class TripsController < ApplicationController
     end
   end
 end
+
+
+
