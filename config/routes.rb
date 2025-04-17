@@ -25,6 +25,6 @@ Rails.application.routes.draw do
     member do
       patch :update_default_currency
     end
-    resources :expenses, only: [:new, :create]
+    resources :expenses, only: [:new, :create, :edit, :update, :destory]
   end
 end

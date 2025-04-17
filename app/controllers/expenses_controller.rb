@@ -33,8 +33,10 @@ class ExpensesController < ApplicationController
   end
 
   def update
+    @trip = Trip.find(params[:trip_id])
     @expense = Expense.find(params[:id])
     if @expense.update(expense_params)
+      # Destory all liables associated with old expense and recreate
       @expense.liables.destory
       user_ids = params[:expense][:user_ids] # This is an array of user IDs
       num_un = user_ids.length
@@ -51,6 +53,13 @@ class ExpensesController < ApplicationController
       flash.now[:alert] = @expense.errors.full_messages.to_sentence
       render :edit
     end
+  end
+
+  def destory
+    @expense = Expense.find(params[:id])
+    @expense.destroy
+    @expense = Trip.find(params[:trip_id])
+    redirect_to trip_path(@trip), notice: "Expense added successfully!"
   end
 
   private
