@@ -21,8 +21,10 @@ Rails.application.routes.draw do
   post "/login", to: "session#create"
   delete '/logout', to: 'session#destroy'
 
-
-  resources :trips, only: [ :index, :show, :new, :create ] do
-    resources :expenses, only: [ :new, :create ]
+  resources :trips, only: [:index, :show, :new, :create] do
+    member do
+      patch :update_default_currency
+    end
+    resources :expenses, only: [:new, :create]
   end
 end

@@ -1,5 +1,21 @@
 <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", media: "all", "data-turbo-track": "reload" %>
 
+<% conversion_rates = {
+    "USD" => {"EUR" => 0.88, "JPY" => 142, "USD" => 1},
+    "EUR" => {"USD" => 1.14, "JPY" => 162, "EUR" => 1},
+    "JPY" => {"USD" => 0.0070, "EUR" => 0.0062, "JPY" => 1}} %>
+
+<%
+  def convert_currency(amount, from, to, rates)
+    if from == to
+      return amount 
+    else
+      return amount * rates[from][to]
+    end
+  end
+%>
+
+
 <div class="container py-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h1 class="h2 fw-bold text-primary"><%= @trip.name %></h1>
@@ -44,21 +60,35 @@
           <% end %>
         </div>
       <% end %>
-      <h5 class="fw-bold">Expenses</h5>
-      <%= link_to "Add Expense", new_trip_expense_path(@trip), class: "btn btn-outline-secondary" %>
+      <div class="d-flex justify-content-between mb-3">
+        <%= link_to "Add Expense", new_trip_expense_path(@trip), class: "btn btn-outline-secondary" %>
+      </div>
+      <%= form_with url: update_default_currency_trip_path(@trip), method: :patch, local: true, scope: :trip do |form| %>
+        <div class="mb-3">
+          <%= form.label :defaultCurrency, "Currency", class: "form-label" %>
+          <%= form.select :defaultCurrency, options_for_select(["USD", "EUR", "JPY"], @trip.defaultCurrency)%>
+          <%= form.submit "Convert", class: "btn btn-primary" %>
+        </div>
+      <% end %>
+
+      <p>Trip currency: <strong><%= @trip.defaultCurrency %></strong></p>
+
+      </div>
+
       <% if @trip.expenses.any? %>
         <ul class="list-group mb-4">
           <% @trip.expenses.each do |expense| %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
-                <%= expense.desc %>:
+                <%= expense.desc? ? expense.desc : "Unnamed" %>:
                 <%= expense.date.present? ? expense.date.strftime("%B %d, %Y") : "No date"%>
               </div>
               <div>
                 People:
                 <%= expense.liables.map { |liable| liable.user.displayName }.join(", ") %>
               </div>
-              <span class="badge bg-primary rounded-pill"><%= number_to_currency(expense.amount) %></span>
+              <% converted_amount = convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates) %>
+              <span class="badge bg-primary rounded-pill"><%= number_to_currency(converted_amount, unit: "#{@trip.defaultCurrency} ") %></span>
             </li>
           <% end %>
         </ul>
