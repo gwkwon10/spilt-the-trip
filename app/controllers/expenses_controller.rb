@@ -1,5 +1,6 @@
 class ExpensesController < ApplicationController
   before_action :authorize_access_trip, only: [:new, :edit, :update, :create, :destroy]
+  @category
   # Get new expenses
   def new
     @trip = Trip.find(params[:trip_id])
@@ -41,7 +42,9 @@ class ExpensesController < ApplicationController
   def edit
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.find(params[:id])
+    @category = @expense.category
     @expense.traveler_id = @expense.liables.find{|l| l.amountLiable > 0}&.user_id
+    @participant_ids = @expense.liables.find{|l| l.amountLiable < 0}&.user_id
   end
 
   def update
@@ -51,6 +54,11 @@ class ExpensesController < ApplicationController
 
     if user_ids.include?(params[:expense][:traveler_id].to_i)
       flash[:alert] = "The person who paid cannot also be involved in paying back"
+      @trip = Trip.find(params[:trip_id])
+      @expense = @trip.expenses.find(params[:id])
+      @expense.category = @category
+      @expense.traveler_id = @expense.liables.find{|l| l.amountLiable > 0}&.user_id
+      @participant_ids = @expense.liables.find{|l| l.amountLiable < 0}&.user_id
       render :new
       return
     end
@@ -71,6 +79,10 @@ class ExpensesController < ApplicationController
       redirect_to trip_path(@trip), notice: "Expense added successfully!"
     else
       flash.now[:alert] = @expense.errors.full_messages.to_sentence
+      @trip = Trip.find(params[:trip_id])
+      @expense = @trip.expenses.find(params[:id])
+      @expense.traveler_id = @expense.liables.find{|l| l.amountLiable > 0}&.user_id
+      @participant_ids = @expense.liables.find{|l| l.amountLiable < 0}&.user_id
       render :edit
     end
   end

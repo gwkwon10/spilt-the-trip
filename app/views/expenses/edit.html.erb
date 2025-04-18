@@ -41,7 +41,7 @@
 
     <div class="mb-3">
       <%= form.label :users, "Select Who Is Involved", class: "form-label" %>
-      <%= form.collection_check_boxes :user_ids, @trip.users.uniq, :id, :displayName do |b| %>
+      <%= form.collection_check_boxes :user_ids, @trip.users.uniq, :id, :displayName, { checked: @participant_ids } do |b| %>
         <div>
           <%= b.check_box %>
           <%= b.label%>
