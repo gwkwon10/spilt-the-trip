@@ -7,7 +7,7 @@
    <% if flash[:alert] %>
       <div class="alert alert-danger"><%= flash[:alert] %></div>
    <% end %>
-  <%= form_with model: [@trip, @expense], url: trip_expenses_path(@trip), method: :post, data: { turbo: false }, local: true, class: "w-50 mx-auto" do |form| %>
+  <%= form_with model: [@trip, @expense], data: { turbo: false }, local: true, class: "w-50 mx-auto" do |form| %>
 
     <div  class="mb-3">
       <%= form.label :desc, "Expense Description", class: "form-label" %><br>
@@ -41,7 +41,7 @@
 
     <div class="mb-3">
       <%= form.label :users, "Select Who Is Involved", class: "form-label" %>
-      <%= form.collection_check_boxes :user_ids, @trip_users, :id, :displayName do |b| %>
+      <%= form.collection_check_boxes :user_ids, @trip.users.uniq, :id, :displayName do |b| %>
         <div>
           <%= b.check_box %>
           <%= b.label%>
@@ -50,7 +50,7 @@
     </div>
     
     <div class="mb-3">
-      <%= form.submit "Add Expense", class: "btn btn-primary w-100" %>
+      <%= form.submit "Update Expense", class: "btn btn-primary w-100" %>
     </div>
 
   <% end %>

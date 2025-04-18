@@ -29,15 +29,16 @@ class ExpensesController < ApplicationController
   end
 
   def edit
-    @expense = Expense.find(params[:id])
+    @trip = Trip.find(params[:trip_id])
+    @expense = @trip.expenses.find(params[:id])
   end
 
   def update
     @trip = Trip.find(params[:trip_id])
-    @expense = Expense.find(params[:id])
+    @expense = @trip.expenses.find(params[:id])
     if @expense.update(expense_params)
       # Destory all liables associated with old expense and recreate
-      @expense.liables.destory
+      @expense.liables.destroy_all
       user_ids = params[:expense][:user_ids] # This is an array of user IDs
       num_un = user_ids.length
       mliable = @expense.amount / num_un
@@ -55,10 +56,10 @@ class ExpensesController < ApplicationController
     end
   end
 
-  def destory
+  def destroy
+    @trip = Trip.find(params[:trip_id])
     @expense = Expense.find(params[:id])
     @expense.destroy
-    @expense = Trip.find(params[:trip_id])
     redirect_to trip_path(@trip), notice: "Expense added successfully!"
   end
 

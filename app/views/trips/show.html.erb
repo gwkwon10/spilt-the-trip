@@ -89,6 +89,7 @@
               </div>
               <% converted_amount = convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates) %>
               <span class="badge bg-primary rounded-pill"><%= number_to_currency(converted_amount, unit: "#{@trip.defaultCurrency} ") %></span>
+              <span class="badge bg-primary rounded-pill"><%= link_to "Edit Expense", edit_trip_expense_path(@trip, expense) %></span>
             </li>
           <% end %>
         </ul>
