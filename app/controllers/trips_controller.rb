@@ -1,6 +1,6 @@
 class TripsController < ApplicationController
   before_action :require_login
-  before_action :authorize_access_trip, only: [:show, :edit, :update, :create, :destroy]
+  before_action :authorize_access_trip, only: [:show, :edit, :update, :destroy]
   # main index page with all the trips of the user
   def index
     if session[:user_id]
