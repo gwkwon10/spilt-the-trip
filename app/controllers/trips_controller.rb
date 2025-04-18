@@ -30,7 +30,6 @@ class TripsController < ApplicationController
     @trip = Trip.new(trip_params)
     @trip.ownerid = current_user.id
     if @trip.save
-      Rails.logger.debug("Made trip")
       # create user trip relation for current user
       OnTrip.create(user_id: current_user.id, trip_id: @trip.id, balance: 0)
       if params[:participant_ids].present?
@@ -54,11 +53,24 @@ class TripsController < ApplicationController
 
   def edit
     @trip = Trip.find(params[:id])
-    @users = User.where.not(id: current_user.id)
+    existing_users = @trip.users
+    @users = User.where.not(id: existing_users.pluck(:id))
   end
-  
   def update
-    
+    @trip = Trip.find(params[:id])
+    if @trip.update(trip_params)
+      if params[:participant_ids].present?
+        params[:participant_ids].each do |user_id|
+          OnTrip.create(user_id: user_id, trip_id: @trip.id, balance: 0)
+        end
+      end
+      redirect_to trips_path, notice: "Edited Trip"
+    else
+      flash.now[:alert] = @trip.errors.full_messages.to_sentence
+      existing_users = @trip.users
+      @users = User.where.not(id: existing_users.pluck(:id))
+      render :edit
+    end
   end
 
   def destroy
