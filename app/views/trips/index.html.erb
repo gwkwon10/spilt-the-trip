@@ -12,21 +12,29 @@
   <% else %>
     <div class="list-group">
       <% @trips.each do |trip| %>
-        <a href="<%= trip_path(trip) %>" class="list-group-item list-group-item-action">
-          <h5 class="mb-1"><%= trip.name %></h5>
-          <p class="mb-1">Start Date: <%= trip.startDate.strftime("%B %d, %Y") %></p>
-          <p class="mb-1">End Date: <%= trip.endDate.strftime("%B %d, %Y") %></p>
-          <p class="text-muted">Currency: <%= trip.defaultCurrency %></p>
-          <%= button_to "Delete Trip", trip_path(trip), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline-secondary" %>
-          <%= link_to "Edit Trip", edit_trip_path(trip), class: "btn btn-outline-secondary" %>
-        </a>
+        <div class="list-group-item">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <a href="<%= trip_path(trip) %>" class="text-decoration-none text-dark">
+                <h5 class="mb-1"><%= trip.name %></h5>
+                <p class="mb-1">Start Date: <%= trip.startDate.strftime("%B %d, %Y") %></p>
+                <p class="mb-1">End Date: <%= trip.endDate.strftime("%B %d, %Y") %></p>
+                <p class="text-muted">Currency: <%= trip.defaultCurrency %></p>
+              </a>
+            </div>
+            <div class="d-flex gap-2">
+              <%= link_to "Edit Trip", edit_trip_path(trip), class: "btn btn-sm btn-outline-primary" %>
+              <%= button_to "Delete Trip", trip_path(trip), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-outline-danger" %>
+            </div>
+          </div>
+        </div>
       <% end %>
     </div>
   <% end %>
 
   <hr class="my-4" />
   <div class="text-center">
-    <%= link_to "Create a New Trip", new_trip_path, class: "btn btn-primary btn-lg" %>
+    <%= link_to "Create a New Trip", new_trip_path, class: "btn btn-primary btn-lg me-2" %>
     <%= link_to "Home Page", root_path, class: "btn btn-primary btn-lg" %>
   </div>
 </div>
