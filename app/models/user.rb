@@ -11,6 +11,7 @@ class User < ApplicationRecord
     has_many :userOwing, through: :owes_as_user_owing, source: :userOwed
 
     validates :username, presence: true, uniqueness: true  #, length:{minimum:6, maximum:20}
+    validates :email, presence: true, uniqueness: true
     #validates :password, presence:true, length:{minimum:8}
 
     #after_create :log_new_user
