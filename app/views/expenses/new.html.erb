@@ -26,7 +26,7 @@
 
     <div class="mb-3">
       <%= form.label :currency, class: "form-label" %>
-      <%= form.select :currency, options_for_select(["USD", "EUR", "JPY"]), class: "form-control", required: true %>
+      <%= form.select :currency, options_for_select(["USD", "EUR", "JPY"], @expense.currency), class: "form-control", required: true %>
     </div>
 
     <div class="mb-3">

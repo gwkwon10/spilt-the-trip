@@ -4,6 +4,8 @@ class Expense < ApplicationRecord
     has_many :liables, dependent: :destroy
     has_many :users, through: :liables
 
+    attr_accessor :traveler_id
+
     validate :date_within_trip
     validate :greater_than_zero
 
