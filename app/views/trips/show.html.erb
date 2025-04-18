@@ -88,8 +88,8 @@ end
               <div>
                 <%= expense.desc.present? ? expense.desc : "Unnamed" %>:
                 <%= expense.date.present? ? expense.date.strftime("%B %d, %Y") : "No date" %><br>
-                <small>Paid by: <%= expense.payer&.displayName || "Unknown" %></small><br>
-                <small>Involved: <%= expense.liables.map(&:user).map(&:displayName).join(", ") %></small>
+                <small>Paid by: <%= expense.liables.select { |l| l.amountLiable > 0 }.map { |liable| liable.user.displayName }.join(", ")|| "Unknown" %></small><br>
+                <small>Involved: <%= expense.liables.select { |l| l.amountLiable < 0 }.map { |liable| liable.user.displayName }.join(", ") %></small>
               </div>
               <div class="text-end">
                 <% converted_amount = convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates) %>
