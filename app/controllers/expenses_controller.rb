@@ -58,7 +58,7 @@ class ExpensesController < ApplicationController
 
   def destroy
     @trip = Trip.find(params[:trip_id])
-    @expense = Expense.find(params[:id])
+    @expense = @trip.expenses.find(params[:id])
     @expense.destroy
     redirect_to trip_path(@trip), notice: "Expense added successfully!"
   end
