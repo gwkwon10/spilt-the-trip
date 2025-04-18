@@ -155,8 +155,6 @@ class TripsController < ApplicationController
 
   def calc_total_spent
     @trip.on_trips.each do |onT|
-      puts "A"
-      puts onT.balance
       onT.balance = 0
       onT.save
     end
@@ -164,7 +162,6 @@ class TripsController < ApplicationController
     exArr = @trip.expenses
     exArr.each do |expense|
       rcmdAmt = convert_currency(expense.amount / expense.liables.count, expense.currency, "USD")
-      puts rcmdAmt
       expense.liables.each do |liable|
         on_trip_record = OnTrip.find_by(user_id: liable.user_id, trip_id: @trip.id)
         if on_trip_record
