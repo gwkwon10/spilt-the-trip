@@ -118,17 +118,19 @@ class TripsController < ApplicationController
         owes.each do |ower|
           create = false
           amount = convert_currency(ower.amountLiable.abs, expense.currency, @trip.defaultCurrency)
-          other_way = Owe.find_by(userOwing: payer.user, userOwed: ower.user)
-          if other_way
+          other_way = Owe.find_by(userOwing: payer.user, userOwed: ower.user, trip_id_mirror: @trip.id)
+          if other_way.present?
             if other_way.amountOwed > amount
               other_way.amountOwed -= amount
               other_way.save!
             elsif other_way.amountOwed < amount
               amount -= other_way.amountOwed
-              other_way.destroy
+              other_way.delete
+              other_way.save
               create = true
             else
-              other_way.destroy
+              other_way.delete
+              other_way.save
             end
           else
             create = true

@@ -82,8 +82,12 @@ conversion_rates = {
                 <%= expense.date.present? ? expense.date.strftime("%B %d, %Y") : "No date"%>
               </div>
               <div>
-                People:
-                <%= expense.liables.map { |liable| liable.user.displayName }.join(", ") %>
+                Paid:
+                <%= expense.liables.select{|l| l.amountLiable > 0}.map { |liable| liable.user.displayName }.join(", ") %>
+              </div>
+              <div>
+                Participated:
+                <%= expense.liables.select{|l| l.amountLiable < 0}.map { |liable| liable.user.displayName }.join(", ") %>
               </div>
               <% converted_amount = convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates) %>
               <span class="badge bg-primary rounded-pill"><%= number_to_currency(converted_amount, unit: "#{@trip.defaultCurrency} ") %></span>
