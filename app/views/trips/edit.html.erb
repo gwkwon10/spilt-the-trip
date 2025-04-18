@@ -31,11 +31,6 @@
           class: "form-select" %>
     </div>
 
-    <div class="mb-3">
-      <%= f.label :defaultCurrency, "Default Currency", class: "form-label" %>
-      <%= f.select :defaultCurrency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['JPY', 'JPY']]), {}, class: "form-select", required: true %>
-    </div>
-
     <%= f.submit "Edit Trip", class: "btn btn-primary w-100" %>
   <% end %>
 </div>
