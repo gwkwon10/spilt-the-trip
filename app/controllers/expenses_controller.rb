@@ -5,6 +5,7 @@ class ExpensesController < ApplicationController
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.new
     @trip_users = @trip.users
+    @expense.currency = @trip.defaultCurrency
   end
 
   # Add new expenses
@@ -40,6 +41,7 @@ class ExpensesController < ApplicationController
   def edit
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.find(params[:id])
+    @expense.traveler_id = @expense.liables.find{|l| l.amountLiable > 0}&.user_id
   end
 
   def update

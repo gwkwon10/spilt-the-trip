@@ -22,14 +22,8 @@ class UserController < ApplicationController
     end
     @owes = []
     overall_owes = Owe.where(trip_id_mirror: -1)
-    puts "A"
     overall_owes.each do |owe|
-      puts "B"
       if owe.userOwed.id == @user.id || owe.userOwing.id == @user.id
-        puts "C"
-        puts owe.userOwed.id
-        puts owe.userOwing.id
-        puts @user.id
         @owes << owe
       end
     end
@@ -60,8 +54,6 @@ class UserController < ApplicationController
       # Step 2: For all lb_arr[NOT i]:
       lb_arr.each_with_index do |liable, i|
         if i == payingI
-          puts payingI
-          puts i
           break
         end
         # Step 3: Make/Update an Owe where
