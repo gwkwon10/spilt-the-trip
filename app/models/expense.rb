@@ -5,11 +5,18 @@ class Expense < ApplicationRecord
     has_many :users, through: :liables
 
     validate :date_within_trip
+    validate :greater_than_zero
 
     private
     def date_within_trip
       if date < trip.startDate || date > trip.endDate
         errors.add(:date, "must be within the trip dates (#{trip.startDate} to #{trip.endDate})")
+      end
+    end
+
+    def greater_than_zero
+      if amount <= 0
+        errors.add(:amount, "Amount must be greater than 0")
       end
     end
 
