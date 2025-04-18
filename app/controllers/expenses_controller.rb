@@ -83,9 +83,9 @@ class ExpensesController < ApplicationController
   private
 
   def authorize_access_trip
-    @trip = Trip.find_by(id: params[:id])
+    @trip = Trip.find_by(id: params[:trip_id])
     unless @trip.present? && @trip.users.include?(current_user)
-      flash[:alert] = "Cannot access trip you are not apart of"
+      flash[:alert] = "Cannot access expense you are not apart of"
       redirect_to trips_path
     end
   end
