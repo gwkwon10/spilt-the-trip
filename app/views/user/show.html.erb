@@ -7,6 +7,40 @@
     <h3><%= @user.displayName %></h3>
     <p><strong>Username:</strong> <%= @user.username %></p>
     <p><strong>Email:</strong> <%= @user.email %></p>
+    
+    <%# Admin button %>
+    <% if @user.username == "admin1" %>
+      <%= button_to "Calculate Applciation-Wide Owes", calc_owes_path, method: :post, class: "btn btn-outline-primary" %><br>
+    <% end %>
+
+    <%# whose trimirro = -1 %>
+    <%# Case 1: userOwed is YOU. amountOwed is positive %>
+    <%# OWED, userOwed is on the right side of the arrow and amountOwed %>
+    <%# Case 2: userOwed is YOU. amountOwed is negative %>
+    <%# OWING, userOwing is on the right side of the arrow and amountOwed*-1 %>
+    <%# Case 3: userOwing is YOU. amountOwed is positive %>
+    <%# OWING, userOwed is on the right side of the arrow and amountOwed %>
+    <%# Case 4: userOwing is YOU. amountOwed is negative %>
+    <%# OWED, userOwing is on the right side of the arrow and amountOwed*-1 %>
+    <h5 class="fw-bold">Your Dues</h5>
+        <% if @owes.any? %>
+          <ul class="list-group mb-4">
+            <% @owes.each do |owe|
+                  leftUser = owe.userOwing
+                  rightUser = owe.userOwed
+                  if owe.amountOwed < 0
+                    owe.amountOwed *= -1
+                    leftUser = owe.userOwed
+                    rightUser = owe.userOwing
+                  end
+                  if owe.amountOwed > 0 #if amountOwed is 0, do not display%>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                      <%= owe.userOwing.displayName %> → <%= owe.userOwed.displayName %>: $<%= '%.2f' % owe.amountOwed %>
+                    </li>
+                  <% end %>
+            <% end %>
+          </ul>
+        <% end %>
   </div>
 
   <div class="text-center mt-4">

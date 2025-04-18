@@ -15,7 +15,7 @@ Rails.application.routes.draw do
 
   get "/signup", to: "user#new"
   post "/signup", to: "user#create"
-
+  post 'calc_owes', to: 'user#calc_owes'
 
   get "/login", to: "session#new"
   post "/login", to: "session#create"
