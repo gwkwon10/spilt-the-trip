@@ -16,6 +16,10 @@ class UserController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    if @user != current_user
+      flash.now[:alert] = "Only able to see your profile information"
+      redirect_to user_path(current_user)
+    end
     @owes = []
     overall_owes = Owe.where(trip_id_mirror: -1)
     puts "A"
