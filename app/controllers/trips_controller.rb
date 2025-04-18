@@ -129,8 +129,14 @@ class TripsController < ApplicationController
             create = true
           end
           if create
-            owe = Owe.new(userOwing: ower.user, userOwed: payer.user, amountOwed: amount, trip_id_mirror: @trip.id)
-            owe.save!
+            exist = Owe.find_by(userOwing: ower.user, userOwed: payer.user, trip_id_mirror: @trip.id)
+            if exist.present?
+              exist.amountOwed += amount
+              exist.save!
+            else
+              owe = Owe.new(userOwing: ower.user, userOwed: payer.user, amountOwed: amount, trip_id_mirror: @trip.id)
+              owe.save!
+            end
           end
         end
       end
