@@ -19,12 +19,14 @@ Rails.application.routes.draw do
 
   get "/login", to: "session#new"
   post "/login", to: "session#create"
-  delete '/logout', to: 'session#destroy'
+  delete "/logout", to: "session#destroy"
+
+  resources :users, controller: "user", only: [ :show ]
 
   resources :trips do
     member do
       patch :update_default_currency
     end
-    resources :expenses, only: [:new, :create, :edit, :update, :destroy]
+    resources :expenses, only: [ :new, :create, :edit, :update, :destroy ]
   end
 end
