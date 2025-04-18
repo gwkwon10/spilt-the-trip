@@ -10,7 +10,11 @@
   </div>
 
   <% if user_login? %>
-    <hr class="my-5" />
+  <div class="mt-4">
+    <%= link_to "Your Profile", user_path(current_user), class: "btn btn-info btn-lg" %>
+  </div>
+
+   <hr class="my-5" />
     <p class="text-muted">
       Not you? <%= button_to "Log out", logout_path, method: :delete %>
     </p>

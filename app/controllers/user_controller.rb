@@ -12,9 +12,11 @@ class UserController < ApplicationController
       flash.now[:alert] = @user.errors.full_messages.to_sentence
       render :new
     end
-
   end
 
+  def show
+    @user = User.find(params[:id])
+  end
   private
 
   def user_params
