@@ -55,7 +55,8 @@ end
           <% @travelers.each do |user| %>
             <div>
               <%= user.displayName.upcase %> -
-              <%= number_to_currency(OnTrip.find_by(user_id: user.id, trip_id: @trip.id)&.balance || 0) %>
+              <%= number_to_currency(convert_currency(OnTrip.find_by(user_id: user.id, trip_id: @trip.id)&.balance || 0, "USD", @trip.defaultCurrency, conversion_rates),
+                unit: "#{@trip.defaultCurrency} ")%>
             </div>
           <% end %>
         </div>

@@ -138,17 +138,29 @@ class TripsController < ApplicationController
   end
 
   def calc_total_spent
-    @travelers.each do |user|
-      # Find the total amount a user is liable for in a specific trip
-      total = Liable.joins(:expense).where(user_id: user.id).where(expenses: { trip_id: @trip.id }).sum("ABS(amountLiable)")
-
-      on_trip_record = OnTrip.find_by(user_id: user.id, trip_id: @trip.id)
-      if on_trip_record
-        on_trip_record.update(balance: total)  # Update balance for the user
-      else
-        # If the on_trip record doesn't exist, create it with the balance
-        OnTrip.create(user_id: user.id, trip_id: @trip.id, balance: total_spent)
+    @trip.on_trips.each do |onT|
+      puts "A"
+      puts onT.balance
+      onT.balance = 0
+      onT.save
+    end
+    # Find the total amount a user is liable for in a specific trip
+    exArr = @trip.expenses
+    exArr.each do |expense|
+      rcmdAmt = convert_currency(expense.amount / expense.liables.count, expense.currency, "USD")
+      puts rcmdAmt
+      expense.liables.each do |liable|
+        on_trip_record = OnTrip.find_by(user_id: liable.user_id, trip_id: @trip.id)
+        if on_trip_record
+          on_trip_record.update(balance: on_trip_record.balance + rcmdAmt)  # Update balance for the user
+        else
+          # If the on_trip record doesn't exist, create it with the balance
+          OnTrip.create(user_id: liable.user_id, trip_id: @trip.id, balance: rcmdAmt)
+        end
       end
     end
+    #total = Liable.joins(:expense).where(user_id: user.id).where(expenses: { trip_id: @trip.id }).sum("ABS(amountLiable)")
+
+    
   end
 end
