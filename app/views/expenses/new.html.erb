@@ -11,32 +11,32 @@
 
     <div  class="mb-3">
       <%= form.label :desc, "Expense Description", class: "form-label" %><br>
-      <%= form.text_field :desc %>
+      <%= form.text_field :desc, required: true %>
     </div>
 
     <div class="mb-3">
       <%= form.label :category, class: "form-label" %>
-      <%= form.select :category, options_for_select(["Food", "Transport", "Lodging", "Entertainment", "Other"]) %>
+      <%= form.select :category, options_for_select(["Food", "Transport", "Lodging", "Entertainment", "Other"]), required: true %>
     </div>
 
     <div class="mb-3">
       <%= form.label :amount, "Amount", class: "form-label" %><br>
-      <%= form.number_field :amount,  step: 0.01 , class: "form-control"%>
+      <%= form.number_field :amount,  step: 0.01 , class: "form-control", required: true%>
     </div>
 
     <div class="mb-3">
       <%= form.label :currency, class: "form-label" %>
-      <%= form.select :currency, options_for_select(["USD", "EUR", "JPY"]), class: "form-control" %>
+      <%= form.select :currency, options_for_select(["USD", "EUR", "JPY"]), class: "form-control", required: true %>
     </div>
 
     <div class="mb-3">
       <%= form.label :date, "Date of Expense", class: "form-label" %><br>
-      <%= form.date_field :date, class: "form-control" %>
+      <%= form.date_field :date, class: "form-control", required: true %>
     </div>
 
     <div class="mb-3">
       <%= form.label :traveler_id, "Who Paid?", class: "form-label" %><br>
-      <%= form.collection_select :traveler_id, @trip.users, :id, :displayName, prompt: "Select Payer", class: "form-control" %>
+      <%= form.collection_select :traveler_id, @trip.users, :id, :displayName, prompt: "Select Payer", class: "form-control", required: true %>
     </div>
 
     <div class="mb-3">
