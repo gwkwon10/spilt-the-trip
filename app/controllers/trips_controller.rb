@@ -1,5 +1,6 @@
 class TripsController < ApplicationController
   before_action :require_login
+  before_action :authorize_access_trip, only: [:show, :edit, :update, :create, :destroy]
   # main index page with all the trips of the user
   def index
     if session[:user_id]
@@ -92,6 +93,15 @@ class TripsController < ApplicationController
   end
 
   private
+
+  def authorize_access_trip
+    @trip = Trip.find_by(id: params[:id])
+    unless @trip.present? && @trip.users.include?(current_user)
+      flash[:alert] = "Cannot access trip you are not apart of"
+      redirect_to trips_path
+    end
+  end
+
   def trip_params
     params.require(:trip).permit(:name, :startDate, :endDate, :defaultCurrency) # add other parameters
   end
