@@ -33,45 +33,38 @@ class TripsController < ApplicationController
       Rails.logger.debug("Made trip")
       # create user trip relation for current user
       OnTrip.create(user_id: current_user.id, trip_id: @trip.id, balance: 0)
-  # Rails.logger.debug("Added current user")
-  # find the user for each traveler added to the trip
-  #     if params[:traveler_emails].present?
-  #       Rails.logger.debug("Access emails")
-  #       traveler_emails = params[:traveler_emails].split(",").map(&string)
-  #       traveler_emails.each do |email|
-  #         user = User.find_by(email: email)
-  #         if user
-  #           OnTrip.create(user_id: user.id, trip_id: @trip.id, balance: 0)
-  #         end
-  #         # potentially figure out how to handle if user is not signed up to the application
-  #       end
-  #     end
-  #     redirect_to @trip
-  #   else
-  #     flash.now[:alert] = @trip.errors.full_messages.to_sentence
-  #     render :new
-  #   end
-  # end
-  #
-  #
-  if params[:participant_ids].present?
-     params[:participant_ids].each do |user_id|
-    OnTrip.create(user_id: user_id, trip_id: @trip.id, balance: 0)
-    end
-  end
-
-    redirect_to @trip
+      if params[:participant_ids].present?
+        params[:participant_ids].each do |user_id|
+          OnTrip.create(user_id: user_id, trip_id: @trip.id, balance: 0)
+        end
+      end
+      redirect_to @trip
     else
     flash.now[:alert] = @trip.errors.full_messages.to_sentence
     @users = User.where.not(id: current_user.id) # repopulate for render :new
     render :new
     end
-   end
+  end
 
-   def update_default_currency
+  def update_default_currency
     @trip = Trip.find(params[:id])
     @trip.update(defaultCurrency: params[:trip][:defaultCurrency])
     redirect_to @trip
+  end
+
+  def edit
+    @trip = Trip.find(params[:id])
+    @users = User.where.not(id: current_user.id)
+  end
+  
+  def update
+    
+  end
+
+  def destroy
+    @trip = Trip.find(params[:id])
+    @trip.destroy
+    redirect_to trips_path
   end
 
   private
@@ -133,6 +126,3 @@ class TripsController < ApplicationController
     end
   end
 end
-
-
-

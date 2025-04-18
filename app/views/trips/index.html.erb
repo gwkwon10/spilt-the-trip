@@ -13,6 +13,7 @@
           <p class="mb-1">Start Date: <%= trip.startDate.strftime("%B %d, %Y") %></p>
           <p class="mb-1">End Date: <%= trip.endDate.strftime("%B %d, %Y") %></p>
           <p class="text-muted">Currency: <%= trip.defaultCurrency %></p>
+          <%= button_to "Delete Trip", trip_path(trip), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline-secondary" %>
         </a>
       <% end %>
     </div>
