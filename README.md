@@ -15,7 +15,7 @@
 - Click on "View Your Trips" to see all the trips the user participates in
 - Click on "Create a Trip" to start a new trip
     - Add the description, start/end date, default currency, and participants of the trip
-    - The participants of the trip need to be current users
+    - The participants of the trip need to be current users (Hold down the control key to select multiple participants)
 - Edit or Delete a Trip with the button
 - On the specific trip page, user is able to see the details of the specific trip such as dates, participants, expenses, etc
 
