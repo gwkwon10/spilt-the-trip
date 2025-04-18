@@ -1,6 +1,5 @@
 class TripsController < ApplicationController
   before_action :require_login
-
   # main index page with all the trips of the user
   def index
     if session[:user_id]
@@ -48,25 +47,19 @@ class TripsController < ApplicationController
 
   def update_default_currency
     @trip = Trip.find(params[:id])
-    #@trip.update(defaultCurrency: params[:trip][:defaultCurrency])
-    #onTarr = @trip.on_trips
-    #onTarr.each do |onT|
-    #  onT.balance = convert_currency(onT.balance,@trip.defaultCurrency,params[:trip][:defaultCurrency])
-    #  onT.save
-    #end
     @trip.update(defaultCurrency: params[:trip][:defaultCurrency])
     redirect_to @trip
   end
 
   def convert_currency(amount, from, to)
     conversion_rates = {
-    "USD" => {"EUR" => 0.88, "JPY" => 142, "USD" => 1},
-    "EUR" => {"USD" => 1.14, "JPY" => 162, "EUR" => 1},
-    "JPY" => {"USD" => 0.0070, "EUR" => 0.0062, "JPY" => 1}}
+    "USD" => { "EUR" => 0.88, "JPY" => 142, "USD" => 1 },
+    "EUR" => { "USD" => 1.14, "JPY" => 162, "EUR" => 1 },
+    "JPY" => { "USD" => 0.0070, "EUR" => 0.0062, "JPY" => 1 } }
     if from == to
-      return amount 
+      amount
     else
-      return amount * conversion_rates[from][to]
+      amount * conversion_rates[from][to]
     end
   end
 
@@ -111,24 +104,26 @@ class TripsController < ApplicationController
     end
 
     @expenses.each do |expense|
-      paid = expense.liables.select {|user| user.amountLiable > 0}
-      owes = expense.liables.select {|user| user.amountLiable < 0}
+      paid = expense.liables.select { |user| user.amountLiable > 0 }
+      owes = expense.liables.select { |user| user.amountLiable < 0 }
 
       paid.each do |payer|
         owes.each do |ower|
           create = false
           amount = convert_currency(ower.amountLiable.abs, expense.currency, @trip.defaultCurrency)
-          other_way = Owe.find_by(userOwing: payer.user, userOwed: ower.user)
-          if other_way
+          other_way = Owe.find_by(userOwing: payer.user, userOwed: ower.user, trip_id_mirror: @trip.id)
+          if other_way.present?
             if other_way.amountOwed > amount
               other_way.amountOwed -= amount
               other_way.save!
             elsif other_way.amountOwed < amount
               amount -= other_way.amountOwed
-              other_way.destroy
+              other_way.delete
+              other_way.save
               create = true
             else
-              other_way.destroy
+              other_way.delete
+              other_way.save
             end
           else
             create = true

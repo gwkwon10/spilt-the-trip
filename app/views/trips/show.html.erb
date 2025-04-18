@@ -1,17 +1,14 @@
 <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css", media: "all", "data-turbo-track": "reload" %>
 <%
 conversion_rates = {
-    "USD" => {"EUR" => 0.88, "JPY" => 142, "USD" => 1},
-    "EUR" => {"USD" => 1.14, "JPY" => 162, "EUR" => 1},
-    "JPY" => {"USD" => 0.0070, "EUR" => 0.0062, "JPY" => 1}}
+  "USD" => {"EUR" => 0.88, "JPY" => 142, "USD" => 1},
+  "EUR" => {"USD" => 1.14, "JPY" => 162, "EUR" => 1},
+  "JPY" => {"USD" => 0.0070, "EUR" => 0.0062, "JPY" => 1}
+}
 
-    def convert_currency(amount, from, to, rates)
-      if from == to
-        return amount 
-      else
-        return amount * rates[from][to]
-      end
-    end
+def convert_currency(amount, from, to, rates)
+  from == to ? amount : amount * rates[from][to]
+end
 %>
 
 <div class="container py-5">
@@ -20,90 +17,106 @@ conversion_rates = {
     <%= link_to "Back to Trips", trips_path, class: "btn btn-outline-secondary" %>
   </div>
 
-  <div class="card shadow-sm border-primary border-2">
+  <div class="card shadow-sm border-primary border-2 mb-5">
     <div class="card-header bg-primary text-white">
       <h5 class="card-title mb-0">
         <%= @trip.startDate.strftime("%b %d") %> - <%= @trip.endDate.strftime("%b %d, %Y") %>
       </h5>
     </div>
-
     <div class="card-body">
       <div class="mb-3">
         <span class="badge bg-info text-dark me-2">
           <%= pluralize(@travelers.count, "participant") %>
         </span>
         <span class="badge bg-success-subtle text-success">
-        <% if @trip.expenses.count.zero? %>
+          <% if @trip.expenses.count.zero? %>
             No expenses
-        <% else %>
+          <% else %>
             <%= "#{@trip.expenses.count} expenses" %>
-        <% end %>
+          <% end %>
         </span>
       </div>
 
       <% if @trip.expenses.any? %>
         <p class="fw-semibold text-muted">
-          Total Spent: <%= number_to_currency(@trip.expenses.map{|expense| convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates)}.sum, unit: "#{@trip.defaultCurrency} ")%>
+          Total Spent:
+          <%= number_to_currency(
+                @trip.expenses
+                  .map { |e| convert_currency(e.amount || 0, e.currency, @trip.defaultCurrency, conversion_rates) }
+                  .sum,
+                unit: "#{@trip.defaultCurrency} "
+              ) %>
         </p>
       <% end %>
 
       <% if @travelers.any? %>
         <h5 class="fw-bold">Participants</h5>
         <div class="d-flex align-items-center gap-2 mb-4">
-          <% @travelers.each do |users| %>
-            <div ><%puts OnTrip.find_by(user_id: users.id, trip_id: @trip.id)&.balance%>
-              <%= users.displayName.upcase %> - Balance: 
-              <%= number_to_currency(OnTrip.find_by(user_id: users.id, trip_id: @trip.id)&.balance || 0) %>
+          <% @travelers.each do |user| %>
+            <div>
+              <%= user.displayName.upcase %> -
+              <%= number_to_currency(OnTrip.find_by(user_id: user.id, trip_id: @trip.id)&.balance || 0) %>
             </div>
           <% end %>
         </div>
       <% end %>
+
       <div class="d-flex justify-content-between mb-3">
         <%= link_to "Add Expense", new_trip_expense_path(@trip), class: "btn btn-outline-secondary" %>
       </div>
+
       <%= form_with url: update_default_currency_trip_path(@trip), method: :patch, local: true, scope: :trip do |form| %>
         <div class="mb-3">
           <%= form.label :defaultCurrency, "Currency", class: "form-label" %>
-          <%= form.select :defaultCurrency, options_for_select(["USD", "EUR", "JPY"], @trip.defaultCurrency)%>
+          <%= form.select :defaultCurrency, options_for_select(["USD", "EUR", "JPY"], @trip.defaultCurrency), {}, class: "form-select d-inline-block w-auto me-2" %>
           <%= form.submit "Convert", class: "btn btn-primary" %>
         </div>
       <% end %>
 
       <p>Trip currency: <strong><%= @trip.defaultCurrency %></strong></p>
+    </div>
+  </div>
 
-      </div>
-
-      <% if @trip.expenses.any? %>
+  <% if @trip.expenses.any? %>
+    <% grouped = @trip.expenses.order(:date).group_by(&:category) %>
+    <% grouped.each do |category, expenses| %>
+      <div class="mb-5">
+        <h3 class="text-secondary text-capitalize"><%= category %></h3>
         <ul class="list-group mb-4">
-          <% @trip.expenses.each do |expense| %>
+          <% expenses.each do |expense| %>
             <li class="list-group-item d-flex justify-content-between align-items-center">
               <div>
-                <%= expense.desc? ? expense.desc : "Unnamed" %>:
-                <%= expense.date.present? ? expense.date.strftime("%B %d, %Y") : "No date"%>
+                <%= expense.desc.present? ? expense.desc : "Unnamed" %>:
+                <%= expense.date.present? ? expense.date.strftime("%B %d, %Y") : "No date" %><br>
+                <small>Paid by: <%= expense.payer&.displayName || "Unknown" %></small><br>
+                <small>Involved: <%= expense.liables.map(&:user).map(&:displayName).join(", ") %></small>
               </div>
-              <div>
-                People:
-                <%= expense.liables.map { |liable| liable.user.displayName }.join(", ") %>
+              <div class="text-end">
+                <% converted_amount = convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates) %>
+                <span class="badge bg-primary rounded-pill mb-2">
+                  <%= number_to_currency(converted_amount, unit: "#{@trip.defaultCurrency} ") %>
+                </span>
+                <div class="d-flex gap-2">
+                  <%= link_to "Edit Expense", edit_trip_expense_path(@trip, expense), class: "btn btn-sm btn-outline-primary" %>
+                  <%= button_to "Delete Expense", trip_expense_path(@trip, expense), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-outline-danger" %>
+                </div>
               </div>
-              <% converted_amount = convert_currency(expense.amount || 0, expense.currency, @trip.defaultCurrency, conversion_rates) %>
-              <span class="badge bg-primary rounded-pill"><%= number_to_currency(converted_amount, unit: "#{@trip.defaultCurrency} ") %></span>
-              <span class="badge bg-primary rounded-pill"><%= link_to "Edit Expense", edit_trip_expense_path(@trip, expense), style: "color:white;" %></span>
-              <span class="badge bg-primary rounded-pill"><%= button_to "Delete Expense", trip_expense_path(@trip, expense), method: :delete, data: { confirm: "Are you sure?" } %></span>
             </li>
           <% end %>
         </ul>
-        <br>
-        <h5 class="fw-bold">Who Owes What</h5>
-        <% if @owe.any? %>
-          <ul class="list-group mb-4">
-            <% @owe.each do |expense| %>
-              <li class="list-group-item d-flex justify-content-between align-items-center">
-                <%= expense.userOwing.displayName %> → <%= expense.userOwed.displayName %>: $<%= '%.2f' % expense.amountOwed %>
-              </li>
-            <% end %>
-          </ul>
-        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <h5 class="fw-bold">Who Owes What</h5>
+  <% if @owe.any? %>
+    <ul class="list-group mb-4">
+      <% @owe.each do |expense| %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <%= expense.userOwing.displayName %> → <%= 
+          expense.userOwed.displayName %>: $<%= '%.2f' % expense.amountOwed %>
+        </li>
       <% end %>
-    </div>
-  </div>
+    </ul>
+  <% end %>
 </div>

@@ -10,9 +10,16 @@ class ExpensesController < ApplicationController
   def create
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.new(expense_params)
+    user_ids = params[:expense][:user_ids].reject(&:blank?).map(&:to_i)# This is an array of user IDs
+
+    if user_ids.include?(params[:expense][:traveler_id].to_i)
+      flash[:alert] = "The person who paid cannot also be involved in paying back"
+      render :new
+      return
+    end
 
     if @expense.save
-      user_ids = params[:expense][:user_ids] # This is an array of user IDs
+      user_ids = params[:expense][:user_ids]
       num_un = user_ids.length
       mliable = @expense.amount / num_un
 
@@ -24,6 +31,7 @@ class ExpensesController < ApplicationController
       Liable.create(user_id: params[:expense][:traveler_id], amountLiable: mliable, expense_id: @expense.id)
       redirect_to trip_path(@trip), notice: "Expense added successfully!"
     else
+      flash.now[:alert] = @expense.errors.full_messages.to_sentence
       render :new
     end
   end
@@ -36,6 +44,14 @@ class ExpensesController < ApplicationController
   def update
     @trip = Trip.find(params[:trip_id])
     @expense = @trip.expenses.find(params[:id])
+    user_ids = params[:expense][:user_ids].reject(&:blank?).map(&:to_i)# This is an array of user IDs
+
+    if user_ids.include?(params[:expense][:traveler_id].to_i)
+      flash[:alert] = "The person who paid cannot also be involved in paying back"
+      render :new
+      return
+    end
+
     if @expense.update(expense_params)
       # Destory all liables associated with old expense and recreate
       @expense.liables.destroy_all
@@ -66,6 +82,6 @@ class ExpensesController < ApplicationController
   private
 
   def expense_params
-    params.require(:expense).permit(:desc, :amount, :date, :currency, :category )
+    params.require(:expense).permit(:desc, :amount, :date, :currency, :category)
   end
 end
