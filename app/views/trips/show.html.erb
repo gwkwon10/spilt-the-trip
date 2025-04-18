@@ -111,9 +111,10 @@ end
   <h5 class="fw-bold">Who Owes What</h5>
   <% if @owe.any? %>
     <ul class="list-group mb-4">
-      <% @owe.each do |o| %>
+      <% @owe.each do |expense| %>
         <li class="list-group-item d-flex justify-content-between align-items-center">
-          <%= o.userOwing.displayName %> → <%= o.userOwed.displayName %>: $<%= '%.2f' % o.amountOwed %>
+          <%= expense.userOwing.displayName %> → <%= 
+          expense.userOwed.displayName %>: $<%= '%.2f' % expense.amountOwed %>
         </li>
       <% end %>
     </ul>

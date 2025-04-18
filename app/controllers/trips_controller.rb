@@ -16,7 +16,7 @@ class TripsController < ApplicationController
     @travelers = @trip.users
     calc_ows_in_trip
     calc_total_spent
-    @owe = Owe.all
+    @owe = Owe.where(trip_id_mirror: @trip.id)
   end
 
   # request for new trip to be added
@@ -49,6 +49,18 @@ class TripsController < ApplicationController
     @trip = Trip.find(params[:id])
     @trip.update(defaultCurrency: params[:trip][:defaultCurrency])
     redirect_to @trip
+  end
+
+  def convert_currency(amount, from, to)
+    conversion_rates = {
+    "USD" => { "EUR" => 0.88, "JPY" => 142, "USD" => 1 },
+    "EUR" => { "USD" => 1.14, "JPY" => 162, "EUR" => 1 },
+    "JPY" => { "USD" => 0.0070, "EUR" => 0.0062, "JPY" => 1 } }
+    if from == to
+      amount
+    else
+      amount * conversion_rates[from][to]
+    end
   end
 
   def edit
@@ -87,7 +99,7 @@ class TripsController < ApplicationController
   def calc_ows_in_trip
     owe_arr = Owe.where(trip_id_mirror: @trip.id)
     owe_arr.each do |owe|
-      owe.amountOwed = 0
+      owe.delete
       owe.save
     end
 
@@ -98,7 +110,7 @@ class TripsController < ApplicationController
       paid.each do |payer|
         owes.each do |ower|
           create = false
-          amount = ower.amountLiable.abs
+          amount = convert_currency(ower.amountLiable.abs, expense.currency, @trip.defaultCurrency)
           other_way = Owe.find_by(userOwing: payer.user, userOwed: ower.user)
           if other_way
             if other_way.amountOwed > amount
