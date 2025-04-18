@@ -20,7 +20,14 @@ end
   <div class="card shadow-sm border-primary border-2 mb-5">
     <div class="card-header bg-primary text-white">
       <h5 class="card-title mb-0">
-        <%= @trip.startDate.strftime("%b %d") %> - <%= @trip.endDate.strftime("%b %d, %Y") %>
+        <% if @trip.startDate.year == @trip.endDate.year %>
+          <% if @trip.startDate != @trip.endDate %>
+            <%= @trip.startDate.strftime("%b %d").concat(" - ") %>
+          <% end %>
+        <% else %>
+          <%= @trip.startDate.strftime("%b %d, %Y").concat(" - ") %>
+        <% end %>
+        <%= @trip.endDate.strftime("%b %d, %Y") %>
       </h5>
     </div>
     <div class="card-body">
