@@ -23,3 +23,8 @@
 - User is able to see the total trip balance and how much each user spent on the trip in the specific trip page
 - User is able to see all the expenses associated with the trip, along with the details of each expense such as amount, who paid, etc
 - How much each participants owe each other is on the trip page as well, showing how to spilt all the expense for the trip
+- Edit or Delete an Expense with each button
+
+## Profile
+- View user info, who owes you money, and who you owe money to
+- The Administrator with username "admin1" can trigger these Owe calculations on their profile page
