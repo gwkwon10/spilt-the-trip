@@ -1,4 +1,5 @@
 class ExpensesController < ApplicationController
+  before_action :authorize_access_trip, only: [:new, :edit, :update, :create, :destroy]
   # Get new expenses
   def new
     @trip = Trip.find(params[:trip_id])
@@ -80,6 +81,14 @@ class ExpensesController < ApplicationController
   end
 
   private
+
+  def authorize_access_trip
+    @trip = Trip.find_by(id: params[:id])
+    unless @trip.present? && @trip.users.include?(current_user)
+      flash[:alert] = "Cannot access trip you are not apart of"
+      redirect_to trips_path
+    end
+  end
 
   def expense_params
     params.require(:expense).permit(:desc, :amount, :date, :currency, :category)

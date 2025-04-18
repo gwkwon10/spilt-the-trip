@@ -2,6 +2,10 @@
 
 <div class="container py-5">
   <h1 class="display-4 text-center">Your Trips</h1>
+  
+  <% if flash[:alert] %>
+    <div class="alert alert-danger"><%= flash[:alert] %></div>
+  <% end %>
 
   <% if @trips.empty? %>
     <p class="text-center">You have no trips yet.</p>
