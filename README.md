@@ -1,5 +1,7 @@
 # Project6-Group3: Spilt the Bill
 
+### This repository was originally linked to my school github account, which is polar16310
+
 ## Set Up
 1. Download and set up Ruby on Rails 
 2. Get all the gem files for the project through running "bundle install"
